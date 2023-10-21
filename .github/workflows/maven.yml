@@ -19,6 +19,10 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      jasypt.encryptor.password: ${{ secrets.JASYPT_ENCRYPTOR_PASSWORD }}
+      jwt.key: ${{ secrets.JWT_KEY }}
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -27,5 +31,11 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    - name: Set Environment Variables
+      run: |
+        echo "Setting Jasypt Password as an environment variable"
+        echo "jasypt.encryptor.password=${JASYPT_ENCRYPTOR_PASSWORD}" >> $GITHUB_ENV
+        echo "Setting JWT Key as an environment variable"
+        echo "jwt.key=${JWT_KEY}" >> $GITHUB_ENV
     - name: Build with Maven
       run: mvn -B package --file pom.xml
